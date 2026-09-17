@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سياسة الخصوصية | Privacy Policy</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .card {
+            background: #ffffff;
+            width: 100%;
+            max-width: 600px;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            line-height: 1.7;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .lang-btn {
+            background: #2a5298;
+            color: #ffffff;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn:hover {
+            background: #1e3c72;
+        }
+
+        h1 {
+            color: #1e3c72;
+            font-size: 22px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: #2a5298;
+            font-size: 16px;
+            margin-top: 18px;
+            margin-bottom: 8px;
+        }
+
+        p {
+            color: #555;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .footer-links {
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            text-align: center;
+        }
+
+        a {
+            color: #2a5298;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: #1e3c72;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="top-bar">
+            <span>🔒</span>
+            <button class="lang-btn" onclick="toggleLanguage()" id="langToggleBtn">English ➔</button>
+        </div>
+
+        <h1 id="txtTitle">سياسة الخصوصية</h1>
+
+        <div id="contentBlock">
+            <p id="txtIntro">مرحباً بك في موقع حاسبة العمر والوزن المثالي. نحن نحترم خصوصيتك ونلتزم بحمايتها بالكامل.</p>
+
+            <h2 id="sec1Title">1. جمع البيانات واستخدامها</h2>
+            <p id="sec1Text">لا نقوم بجمع أو تخزين أي بيانات شخصية (مثل تاريخ الميلاد، الطول، أو الوزن) على أي خوادم خارجية. جميع الحسابات تتم فوراً داخل متصفحك الخاص عبر كود JavaScript.</p>
+
+            <h2 id="sec2Title">2. ملفات تعريف الارتباط (Cookies)</h2>
+            <p id="sec2Text">هذا الموقع لا يستخدم ملفات تعريف الارتباط (Cookies) للتتبع أو لجمع معلومات عن زوار الموقع.</p>
+
+            <h2 id="sec3Title">3. الروابط الخارجية</h2>
+            <p id="sec3Text">يحتوي الموقع على رابط لحساب المطور على شبكة Instagram. نحن غير مسؤولين عن سياسة الخصوصية المتبعة على المنصات الخارجية.</p>
+
+            <h2 id="sec4Title">4. التواصل مع المطور</h2>
+            <p id="sec4Text">إذا كان لديك أي استفسار حول سياسة الخصوصية، يمكنك التواصل مع المطور عبر حساب Instagram التالية:</p>
+            <p><a href="https://www.instagram.com/hki_184/" target="_blank">@hki_184 على Instagram</a></p>
+        </div>
+
+        <div class="footer-links">
+            <a href="index.html" id="btnBack">← العودة إلى الصفحة الرئيسية</a>
+        </div>
+    </div>
+
+    <script>
+        let currentLang = 'ar';
+
+        const i18n = {
+            ar: {
+                langBtn: "English ➔",
+                dir: "rtl",
+                title: "سياسة الخصوصية",
+                intro: "مرحباً بك في موقع حاسبة العمر والوزن المثالي. نحن نحترم خصوصيتك ونلتزم بحمايتها بالكامل.",
+                sec1Title: "1. جمع البيانات واستخدامها",
+                sec1Text: "لا نقوم بجمع أو تخزين أي بيانات شخصية (مثل تاريخ الميلاد، الطول، أو الوزن) على أي خوادم خارجية. جميع الحسابات تتم فوراً داخل متصفحك الخاص عبر كود JavaScript.",
+                sec2Title: "2. ملفات تعريف الارتباط (Cookies)",
+                sec2Text: "هذا الموقع لا يستخدم ملفات تعريف الارتباط (Cookies) للتتبع أو لجمع معلومات عن زوار الموقع.",
+                sec3Title: "3. الروابط الخارجية",
+                sec3Text: "يحتوي الموقع على رابط لحساب المطور على شبكة Instagram. نحن غير مسؤولين عن سياسة الخصوصية المتبعة على المنصات الخارجية.",
+                sec4Title: "4. التواصل مع المطور",
+                sec4Text: "إذا كان لديك أي استفسار حول سياسة الخصوصية، يمكنك التواصل مع المطور عبر حساب Instagram التالية:",
+                btnBack: "← العودة إلى الصفحة الرئيسية"
+            },
+            en: {
+                langBtn: "العربية ➔",
+                dir: "ltr",
+                title: "Privacy Policy",
+                intro: "Welcome to the Age & Ideal Weight Calculator. We respect your privacy and are fully committed to protecting it.",
+                sec1Title: "1. Data Collection & Usage",
+                sec1Text: "We do not collect or store any personal data (such as birthdate, height, or weight) on any external servers. All calculations are executed locally inside your browser via JavaScript.",
+                sec2Title: "2. Cookies",
+                sec2Text: "This website does not use cookies for tracking or collecting visitor information.",
+                sec3Title: "3. External Links",
+                sec3Text: "The website includes a link to the developer's Instagram account. We are not responsible for the privacy policies of external platforms.",
+                sec4Title: "4. Developer Contact",
+                sec4Text: "If you have any questions regarding this Privacy Policy, you can reach out directly via Instagram:",
+                btnBack: "← Back to Main Page"
+            }
+        };
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            const data = i18n[currentLang];
+
+            document.documentElement.lang = currentLang;
+            document.documentElement.dir = data.dir;
+
+            document.getElementById('langToggleBtn').innerText = data.langBtn;
+            document.getElementById('txtTitle').innerText = data.title;
+            document.getElementById('txtIntro').innerText = data.intro;
+            document.getElementById('sec1Title').innerText = data.sec1Title;
+            document.getElementById('sec1Text').innerText = data.sec1Text;
+            document.getElementById('sec2Title').innerText = data.sec2Title;
+            document.getElementById('sec2Text').innerText = data.sec2Text;
+            document.getElementById('sec3Title').innerText = data.sec3Title;
+            document.getElementById('sec3Text').innerText = data.sec3Text;
+            document.getElementById('sec4Title').innerText = data.sec4Title;
+            document.getElementById('sec4Text').innerText = data.sec4Text;
+            document.getElementById('btnBack').innerText = data.btnBack;
+        }
+    </script>
+</body>
+</html>
