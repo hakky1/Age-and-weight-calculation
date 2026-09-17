@@ -1,369 +1,631 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>حاسبة العمر والوزن المثالي | Age & Weight Calculator</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>حاسبة العمر والوزن المثالي | Age &amp; Weight Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-0:#0e1013;
+    --bg-1:#15181d;
+    --panel:#1b1f26;
+    --panel-2:#20242c;
+    --line:#2a2f38;
+    --text:#eceef1;
+    --text-dim:#9aa1ac;
+    --text-faint:#5f6672;
+    --amber:#e8a33d;
+    --amber-dim:#8a6326;
+    --teal:#3ba99c;
+    --red:#e2604f;
+    --focus:#e8a33d;
+    --radius:18px;
+    --radius-sm:10px;
+  }
 
-        body {
-            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-            color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
+  *{ box-sizing:border-box; margin:0; padding:0; }
 
-        .card {
-            background: #ffffff;
-            width: 100%;
-            max-width: 500px;
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-            position: relative;
-        }
+  html,body{
+    min-height:100vh;
+  }
 
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
+  body{
+    font-family:'Cairo', Tahoma, sans-serif;
+    background:
+      radial-gradient(1100px 700px at 18% -10%, rgba(232,163,61,0.10), transparent 60%),
+      radial-gradient(900px 600px at 100% 110%, rgba(59,169,156,0.09), transparent 55%),
+      var(--bg-0);
+    color:var(--text);
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:36px 18px 60px;
+  }
 
-        .lang-btn {
-            background: #2a5298;
-            color: #ffffff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
+  /* faint instrument-panel grid on the backdrop */
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size:34px 34px;
+    pointer-events:none;
+    z-index:0;
+  }
 
-        .lang-btn:hover {
-            background: #1e3c72;
-            transform: translateY(-1px);
-        }
+  .wrap{
+    position:relative;
+    z-index:1;
+    width:100%;
+    max-width:460px;
+  }
 
-        h2 {
-            text-align: center;
-            color: #1e3c72;
-            margin-bottom: 20px;
-            font-size: 22px;
-        }
+  .top-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:16px;
+  }
 
-        .input-group {
-            margin-bottom: 16px;
-        }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    color:var(--text-dim);
+    font-size:13px;
+    font-weight:600;
+    letter-spacing:0.02em;
+  }
 
-        label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 600;
-            color: #444;
-        }
+  .brand-dot{
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:var(--teal);
+    box-shadow:0 0 0 4px rgba(59,169,156,0.16);
+  }
 
-        input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 16px;
-            outline: none;
-            transition: border-color 0.3s ease;
-        }
+  .lang-btn{
+    background:var(--panel-2);
+    color:var(--text);
+    border:1px solid var(--line);
+    padding:9px 16px;
+    border-radius:999px;
+    cursor:pointer;
+    font-weight:700;
+    font-size:13.5px;
+    font-family:inherit;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    transition:border-color 0.2s ease, background 0.2s ease;
+  }
+  .lang-btn:hover{ border-color:var(--amber-dim); background:#242833; }
+  .lang-btn:focus-visible{ outline:2px solid var(--focus); outline-offset:2px; }
+  .lang-btn .arrow{ color:var(--amber); font-size:15px; line-height:1; }
 
-        input:focus {
-            border-color: #2a5298;
-        }
+  .card{
+    background:linear-gradient(180deg, var(--panel), var(--bg-1));
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:28px 26px 26px;
+    box-shadow:0 30px 60px -20px rgba(0,0,0,0.65);
+  }
 
-        .calc-btn {
-            width: 100%;
-            padding: 14px;
-            background: #2a5298;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s ease;
-            margin-top: 10px;
-        }
+  h1{
+    font-size:21px;
+    font-weight:700;
+    color:var(--text);
+    margin-bottom:4px;
+    line-height:1.35;
+  }
 
-        .calc-btn:hover {
-            background: #1e3c72;
-        }
+  .subhead{
+    color:var(--text-faint);
+    font-size:13.5px;
+    margin-bottom:24px;
+    line-height:1.5;
+  }
 
-        .results {
-            margin-top: 25px;
-            padding-top: 20px;
-            border-top: 2px dashed #e0e0e0;
-            display: none;
-        }
+  .field{
+    margin-bottom:15px;
+  }
 
-        .result-box {
-            background: #f8f9fa;
-            border-radius: 8px;
-            padding: 12px 15px;
-            margin-bottom: 12px;
-            border-inline-start: 4px solid #2a5298;
-        }
+  .field label{
+    display:block;
+    margin-bottom:7px;
+    font-size:13.5px;
+    font-weight:600;
+    color:var(--text-dim);
+  }
 
-        .result-title {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 4px;
-        }
+  .field input{
+    width:100%;
+    padding:13px 14px;
+    background:var(--bg-1);
+    border:1.5px solid var(--line);
+    border-radius:var(--radius-sm);
+    font-size:15.5px;
+    font-family:inherit;
+    color:var(--text);
+    outline:none;
+    transition:border-color 0.2s ease, background 0.2s ease;
+  }
 
-        .result-value {
-            font-size: 17px;
-            font-weight: bold;
-            color: #111;
-        }
+  .field input::placeholder{ color:var(--text-faint); }
 
-        .target-box {
-            background: #eef9f1;
-            border-inline-start-color: #2e7d32;
-        }
+  .field input:focus{
+    border-color:var(--amber);
+    background:#191d24;
+  }
 
-        .status-message {
-            font-size: 15px;
-            line-height: 1.5;
-            font-weight: 600;
-        }
+  /* Chrome/Safari date-picker icon needs inverting on dark bg */
+  input[type="date"]::-webkit-calendar-picker-indicator{
+    filter:invert(0.75);
+    cursor:pointer;
+  }
 
-        .footer-links {
-            margin-top: 25px;
-            text-align: center;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            font-size: 14px;
-            border-top: 1px solid #eee;
-            padding-top: 15px;
-        }
+  .row-2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
 
-        .footer-links a {
-            color: #2a5298;
-            text-decoration: none;
-            font-weight: bold;
-            transition: color 0.3s ease;
-        }
+  .calc-btn{
+    width:100%;
+    padding:15px;
+    margin-top:8px;
+    background:var(--amber);
+    color:#1a1305;
+    border:none;
+    border-radius:var(--radius-sm);
+    font-size:16px;
+    font-weight:700;
+    font-family:inherit;
+    cursor:pointer;
+    transition:transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    box-shadow:0 10px 24px -8px rgba(232,163,61,0.45);
+  }
+  .calc-btn:hover{ background:#f0ae4d; transform:translateY(-1px); }
+  .calc-btn:active{ transform:translateY(0); }
+  .calc-btn:focus-visible{ outline:2px solid #fff; outline-offset:2px; }
 
-        .footer-links a:hover {
-            color: #1e3c72;
-            text-decoration: underline;
-        }
+  .field.error input{ border-color:var(--red); }
+  .field-error-msg{
+    color:var(--red);
+    font-size:12.5px;
+    margin-top:6px;
+    font-weight:600;
+    display:none;
+  }
+  .field.error .field-error-msg{ display:block; }
 
-        .insta-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            color: #e1306c !important;
-        }
-    </style>
+  /* ---- results ---- */
+  .results{
+    margin-top:22px;
+    display:none;
+  }
+  .results.show{ display:block; animation:reveal 0.5s ease; }
+
+  @keyframes reveal{
+    from{ opacity:0; transform:translateY(6px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+
+  .divider{
+    border:none;
+    border-top:1px dashed var(--line);
+    margin-bottom:20px;
+  }
+
+  .hero-metric{
+    text-align:center;
+    padding:22px 10px 24px;
+    background:radial-gradient(circle at 50% 0%, rgba(232,163,61,0.14), transparent 70%);
+    border:1px solid var(--line);
+    border-radius:var(--radius-sm);
+    margin-bottom:14px;
+  }
+
+  .hero-label{
+    font-size:12.5px;
+    color:var(--text-faint);
+    font-weight:700;
+    margin-bottom:10px;
+  }
+
+  .hero-value{
+    font-size:38px;
+    font-weight:900;
+    color:var(--amber);
+    line-height:1.1;
+    font-variant-numeric:tabular-nums;
+    direction:ltr;
+    unicode-bidi:isolate;
+  }
+
+  .hero-sub{
+    font-size:13.5px;
+    color:var(--text-dim);
+    margin-top:8px;
+    direction:ltr;
+    unicode-bidi:isolate;
+  }
+
+  .metric-box{
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    border-inline-start:3px solid var(--teal);
+    border-radius:var(--radius-sm);
+    padding:13px 15px;
+    margin-bottom:12px;
+  }
+
+  .metric-title{
+    font-size:12.5px;
+    color:var(--text-faint);
+    font-weight:700;
+    margin-bottom:5px;
+  }
+
+  .metric-value{
+    font-size:16px;
+    font-weight:700;
+    color:var(--text);
+    direction:ltr;
+    unicode-bidi:isolate;
+    text-align:start;
+  }
+
+  .metric-value .mono-num{
+    font-family:'JetBrains Mono', monospace;
+    font-weight:500;
+    letter-spacing:-0.02em;
+  }
+
+  .advice-box{
+    border-inline-start-color:var(--amber);
+    background:linear-gradient(180deg, rgba(232,163,61,0.08), transparent);
+  }
+  .advice-box.state-good{ border-inline-start-color:var(--teal); }
+  .advice-box.state-lose{ border-inline-start-color:var(--red); }
+  .advice-box.state-gain{ border-inline-start-color:var(--amber); }
+
+  .advice-text{
+    font-size:14.5px;
+    font-weight:600;
+    line-height:1.5;
+  }
+  .state-good .advice-text{ color:var(--teal); }
+  .state-lose .advice-text{ color:var(--red); }
+  .state-gain .advice-text{ color:var(--amber); }
+
+  .footer-links{
+    margin-top:24px;
+    padding-top:16px;
+    border-top:1px solid var(--line);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:13px;
+  }
+
+  .footer-links a{
+    color:var(--text-dim);
+    text-decoration:none;
+    font-weight:600;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    transition:color 0.2s ease;
+  }
+  .footer-links a:hover{ color:var(--amber); }
+  .footer-links a:focus-visible{ outline:2px solid var(--focus); outline-offset:3px; border-radius:4px; }
+
+  @media (prefers-reduced-motion: reduce){
+    .results.show{ animation:none; }
+    .calc-btn:hover{ transform:none; }
+  }
+
+  @media (max-width:400px){
+    .card{ padding:22px 18px 20px; }
+    .hero-value{ font-size:32px; }
+  }
+</style>
 </head>
 <body>
 
-    <div class="card">
-        <div class="top-bar">
-            <span>🌐</span>
-            <button class="lang-btn" onclick="toggleLanguage()" id="langToggleBtn">English ➔</button>
-        </div>
+<div class="wrap">
 
-        <h2 id="txtTitle">حاسبة العمر والوزن المثالي</h2>
+  <div class="top-row">
+    <div class="brand"><span class="brand-dot"></span><span id="txtBrand">مؤشرات حيوية</span></div>
+    <button class="lang-btn" onclick="toggleLanguage()" id="langToggleBtn" type="button">
+      <span id="langBtnText">English</span><span class="arrow">➔</span>
+    </button>
+  </div>
 
-        <div class="input-group">
-            <label for="birthdate" id="lblBirthdate">تاريخ الميلاد الكامل:</label>
-            <input type="date" id="birthdate">
-        </div>
+  <div class="card">
+    <h1 id="txtTitle">حاسبة العمر والوزن المثالي</h1>
+    <p class="subhead" id="txtSubhead">أدخل بياناتك للحصول على عمرك الدقيق ووزنك المثالي فورًا.</p>
 
-        <div class="input-group">
-            <label for="height" id="lblHeight">الطول (بالسنتيمتر):</label>
-            <input type="number" id="height" placeholder="175" min="50" max="250">
-        </div>
-
-        <div class="input-group">
-            <label for="weight" id="lblWeight">الوزن الحالي (بالكيلوغرام):</label>
-            <input type="number" id="weight" placeholder="80" step="0.1" min="20" max="300">
-        </div>
-
-        <button class="calc-btn" onclick="calculate()" id="btnCalculate">احسب النتائج</button>
-
-        <div class="results" id="resultsBlock">
-            <div class="result-box">
-                <div class="result-title" id="lblAgeResult">العمر الحالي:</div>
-                <div class="result-value" id="ageOutput">--</div>
-            </div>
-
-            <div class="result-box">
-                <div class="result-title" id="lblIdealResult">الوزن المثالي المقترح:</div>
-                <div class="result-value" id="idealWeightOutput">--</div>
-            </div>
-
-            <div class="result-box target-box">
-                <div class="result-title" id="lblTargetResult">الهدف للوصول للوزن المثالي:</div>
-                <div class="status-message" id="targetAdvice">--</div>
-            </div>
-        </div>
-
-        <div class="footer-links">
-            <a href="https://www.instagram.com/hki_184/" target="_blank" class="insta-btn">
-                📸 <span id="lblDeveloper">المطور</span>
-            </a>
-            <a href="privacy.html" target="_blank" id="lblPrivacy">سياسة الخصوصية</a>
-        </div>
+    <div class="field" id="fieldBirthdate">
+      <label for="birthdate" id="lblBirthdate">تاريخ الميلاد الكامل</label>
+      <input type="date" id="birthdate">
+      <div class="field-error-msg" id="errBirthdate">يرجى اختيار تاريخ ميلاد صحيح (في الماضي)</div>
     </div>
 
-    <script>
-        let currentLang = 'ar';
+    <div class="row-2">
+      <div class="field" id="fieldHeight">
+        <label for="height" id="lblHeight">الطول (سم)</label>
+        <input type="number" id="height" placeholder="175" min="50" max="250" inputmode="decimal">
+        <div class="field-error-msg" id="errHeight">أدخل طولاً بين 50 و 250 سم</div>
+      </div>
 
-        const i18n = {
-            ar: {
-                langBtn: "English ➔",
-                dir: "rtl",
-                title: "حاسبة العمر والوزن المثالي",
-                lblBirthdate: "تاريخ الميلاد الكامل:",
-                lblHeight: "الطول (بالسنتيمتر):",
-                lblWeight: "الوزن الحالي (بالكيلوغرام):",
-                btnCalculate: "احسب النتائج",
-                lblAgeResult: "العمر الحالي:",
-                lblIdealResult: "الوزن المثالي المقترح:",
-                lblTargetResult: "الهدف للوصول للوزن المثالي:",
-                lblDeveloper: "المطور",
-                lblPrivacy: "سياسة الخصوصية",
-                alertFill: "يرجى إدخال جميع البيانات بشكل صحيح!",
-                years: "سنة",
-                months: "شهر",
-                days: "يوم",
-                kg: "كغم",
-                range: "النطاق الصحي",
-                loseMsg: (diff) => `تحتاج إلى إنقاص حوالي ${diff} كغم للوصول إلى الوزن المثالي.`,
-                gainMsg: (diff) => `تحتاج إلى زيادة حوالي ${diff} كغم للوصول إلى الوزن المثالي.`,
-                perfectMsg: "ممتاز! وزنك الحالي يقع ضمن نطاق الوزن المثالي والصحي."
-            },
-            en: {
-                langBtn: "العربية ➔",
-                dir: "ltr",
-                title: "Age & Ideal Weight Calculator",
-                lblBirthdate: "Full Date of Birth:",
-                lblHeight: "Height (in cm):",
-                lblWeight: "Current Weight (in kg):",
-                btnCalculate: "Calculate Results",
-                lblAgeResult: "Current Age:",
-                lblIdealResult: "Suggested Ideal Weight:",
-                lblTargetResult: "Goal to Reach Ideal Weight:",
-                lblDeveloper: "Developer",
-                lblPrivacy: "Privacy Policy",
-                alertFill: "Please fill in all fields correctly!",
-                years: "years",
-                months: "months",
-                days: "days",
-                kg: "kg",
-                range: "Healthy Range",
-                loseMsg: (diff) => `You need to lose about ${diff} kg to reach your ideal weight.`,
-                gainMsg: (diff) => `You need to gain about ${diff} kg to reach your ideal weight.`,
-                perfectMsg: "Great! Your current weight is within the ideal and healthy range."
-            }
-        };
+      <div class="field" id="fieldWeight">
+        <label for="weight" id="lblWeight">الوزن (كغم)</label>
+        <input type="number" id="weight" placeholder="80" step="0.1" min="20" max="300" inputmode="decimal">
+        <div class="field-error-msg" id="errWeight">أدخل وزناً بين 20 و 300 كغم</div>
+      </div>
+    </div>
 
-        function toggleLanguage() {
-            currentLang = currentLang === 'ar' ? 'en' : 'ar';
-            const langData = i18n[currentLang];
+    <button class="calc-btn" onclick="calculate()" id="btnCalculate" type="button">احسب النتائج</button>
 
-            document.documentElement.lang = currentLang;
-            document.documentElement.dir = langData.dir;
+    <div class="results" id="resultsBlock">
+      <hr class="divider">
 
-            document.getElementById('langToggleBtn').innerText = langData.langBtn;
-            document.getElementById('txtTitle').innerText = langData.title;
-            document.getElementById('lblBirthdate').innerText = langData.lblBirthdate;
-            document.getElementById('lblHeight').innerText = langData.lblHeight;
-            document.getElementById('lblWeight').innerText = langData.lblWeight;
-            document.getElementById('btnCalculate').innerText = langData.btnCalculate;
-            document.getElementById('lblAgeResult').innerText = langData.lblAgeResult;
-            document.getElementById('lblIdealResult').innerText = langData.lblIdealResult;
-            document.getElementById('lblTargetResult').innerText = langData.lblTargetResult;
-            document.getElementById('lblDeveloper').innerText = langData.lblDeveloper;
-            document.getElementById('lblPrivacy').innerText = langData.lblPrivacy;
+      <div class="hero-metric">
+        <div class="hero-label" id="lblAgeResult">عمرك الحالي</div>
+        <div class="hero-value" id="ageOutput">—</div>
+        <div class="hero-sub" id="ageOutputDays">—</div>
+      </div>
 
-            if (document.getElementById('resultsBlock').style.display === 'block') {
-                calculate();
-            }
-        }
+      <div class="metric-box">
+        <div class="metric-title" id="lblIdealResult">الوزن المثالي المقترح</div>
+        <div class="metric-value" id="idealWeightOutput">—</div>
+      </div>
 
-        function calculate() {
-            const birthdateInput = document.getElementById('birthdate').value;
-            const heightInput = parseFloat(document.getElementById('height').value);
-            const weightInput = parseFloat(document.getElementById('weight').value);
-            const langData = i18n[currentLang];
+      <div class="metric-box advice-box" id="adviceBox">
+        <div class="metric-title" id="lblTargetResult">الهدف للوصول للوزن المثالي</div>
+        <div class="advice-text" id="targetAdvice">—</div>
+      </div>
+    </div>
 
-            if (!birthdateInput || !heightInput || !weightInput) {
-                alert(langData.alertFill);
-                return;
-            }
+    <div class="footer-links">
+      <a href="https://www.instagram.com/hki_184/" target="_blank" rel="noopener">
+        📸 <span id="lblDeveloper">المطور</span>
+      </a>
+      <a href="privacy.html" target="_blank" id="lblPrivacy">سياسة الخصوصية</a>
+    </div>
+  </div>
+</div>
 
-            // 1. حساب العمر بالأرقام الإنجليزية
-            const birthDate = new Date(birthdateInput);
-            const today = new Date();
+<script>
+(function(){
+  let currentLang = 'ar';
 
-            let years = today.getFullYear() - birthDate.getFullYear();
-            let months = today.getMonth() - birthDate.getMonth();
-            let days = today.getDate() - birthDate.getDate();
+  const i18n = {
+    ar: {
+      dir: 'rtl',
+      brand: 'مؤشرات حيوية',
+      langBtnText: 'English',
+      title: 'حاسبة العمر والوزن المثالي',
+      subhead: 'أدخل بياناتك للحصول على عمرك الدقيق ووزنك المثالي فورًا.',
+      lblBirthdate: 'تاريخ الميلاد الكامل',
+      lblHeight: 'الطول (سم)',
+      lblWeight: 'الوزن (كغم)',
+      btnCalculate: 'احسب النتائج',
+      lblAgeResult: 'عمرك الحالي',
+      lblIdealResult: 'الوزن المثالي المقترح',
+      lblTargetResult: 'الهدف للوصول للوزن المثالي',
+      lblDeveloper: 'المطور',
+      lblPrivacy: 'سياسة الخصوصية',
+      errBirthdateReq: 'يرجى اختيار تاريخ ميلاد صحيح (في الماضي)',
+      errHeightReq: 'أدخل طولاً بين 50 و 250 سم',
+      errWeightReq: 'أدخل وزناً بين 20 و 300 كغم',
+      years: 'سنة', months: 'شهر', days: 'يوم',
+      kg: 'كغم', cm: 'سم',
+      range: 'النطاق الصحي',
+      loseMsg: (diff) => `تحتاج إلى إنقاص حوالي ${diff} كغم للوصول إلى الوزن المثالي.`,
+      gainMsg: (diff) => `تحتاج إلى زيادة حوالي ${diff} كغم للوصول إلى الوزن المثالي.`,
+      perfectMsg: 'ممتاز! وزنك الحالي يقع ضمن النطاق الصحي والمثالي.'
+    },
+    en: {
+      dir: 'ltr',
+      brand: 'Vital Metrics',
+      langBtnText: 'العربية',
+      title: 'Age & Ideal Weight Calculator',
+      subhead: 'Enter your details to get your exact age and ideal weight instantly.',
+      lblBirthdate: 'Full Date of Birth',
+      lblHeight: 'Height (cm)',
+      lblWeight: 'Weight (kg)',
+      btnCalculate: 'Calculate Results',
+      lblAgeResult: 'Current Age',
+      lblIdealResult: 'Suggested Ideal Weight',
+      lblTargetResult: 'Goal to Reach Ideal Weight',
+      lblDeveloper: 'Developer',
+      lblPrivacy: 'Privacy Policy',
+      errBirthdateReq: 'Please choose a valid date of birth (in the past)',
+      errHeightReq: 'Enter a height between 50 and 250 cm',
+      errWeightReq: 'Enter a weight between 20 and 300 kg',
+      years: 'yrs', months: 'mo', days: 'days',
+      kg: 'kg', cm: 'cm',
+      range: 'Healthy range',
+      loseMsg: (diff) => `You need to lose about ${diff} kg to reach your ideal weight.`,
+      gainMsg: (diff) => `You need to gain about ${diff} kg to reach your ideal weight.`,
+      perfectMsg: 'Great! Your current weight is within the healthy, ideal range.'
+    }
+  };
 
-            if (days < 0) {
-                months--;
-                days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
-            }
-            if (months < 0) {
-                years--;
-                months += 12;
-            }
+  const els = {
+    langBtnText: document.getElementById('langBtnText'),
+    brand: document.getElementById('txtBrand'),
+    title: document.getElementById('txtTitle'),
+    subhead: document.getElementById('txtSubhead'),
+    lblBirthdate: document.getElementById('lblBirthdate'),
+    lblHeight: document.getElementById('lblHeight'),
+    lblWeight: document.getElementById('lblWeight'),
+    btnCalculate: document.getElementById('btnCalculate'),
+    lblAgeResult: document.getElementById('lblAgeResult'),
+    lblIdealResult: document.getElementById('lblIdealResult'),
+    lblTargetResult: document.getElementById('lblTargetResult'),
+    lblDeveloper: document.getElementById('lblDeveloper'),
+    lblPrivacy: document.getElementById('lblPrivacy'),
+    errBirthdate: document.getElementById('errBirthdate'),
+    errHeight: document.getElementById('errHeight'),
+    errWeight: document.getElementById('errWeight'),
+    fieldBirthdate: document.getElementById('fieldBirthdate'),
+    fieldHeight: document.getElementById('fieldHeight'),
+    fieldWeight: document.getElementById('fieldWeight'),
+    birthdate: document.getElementById('birthdate'),
+    height: document.getElementById('height'),
+    weight: document.getElementById('weight'),
+    resultsBlock: document.getElementById('resultsBlock'),
+    ageOutput: document.getElementById('ageOutput'),
+    ageOutputDays: document.getElementById('ageOutputDays'),
+    idealWeightOutput: document.getElementById('idealWeightOutput'),
+    adviceBox: document.getElementById('adviceBox'),
+    targetAdvice: document.getElementById('targetAdvice')
+  };
 
-            document.getElementById('ageOutput').innerText = 
-                `${years} ${langData.years}, ${months} ${langData.months}, ${days} ${langData.days}`;
+  function applyStaticText(lang){
+    const t = i18n[lang];
+    els.langBtnText.textContent = t.langBtnText;
+    els.brand.textContent = t.brand;
+    els.title.textContent = t.title;
+    els.subhead.textContent = t.subhead;
+    els.lblBirthdate.textContent = t.lblBirthdate;
+    els.lblHeight.textContent = t.lblHeight;
+    els.lblWeight.textContent = t.lblWeight;
+    els.btnCalculate.textContent = t.btnCalculate;
+    els.lblAgeResult.textContent = t.lblAgeResult;
+    els.lblIdealResult.textContent = t.lblIdealResult;
+    els.lblTargetResult.textContent = t.lblTargetResult;
+    els.lblDeveloper.textContent = t.lblDeveloper;
+    els.lblPrivacy.textContent = t.lblPrivacy;
+    els.errBirthdate.textContent = t.errBirthdateReq;
+    els.errHeight.textContent = t.errHeightReq;
+    els.errWeight.textContent = t.errWeightReq;
+  }
 
-            // 2. حساب الوزن المثالي بالأرقام الإنجليزية
-            const heightInMeters = heightInput / 100;
-            const idealWeight = (22 * (heightInMeters * heightInMeters)).toFixed(1);
-            const minIdeal = (18.5 * (heightInMeters * heightInMeters)).toFixed(1);
-            const maxIdeal = (24.9 * (heightInMeters * heightInMeters)).toFixed(1);
+  function toggleLanguage(){
+    currentLang = currentLang === 'ar' ? 'en' : 'ar';
+    const t = i18n[currentLang];
 
-            document.getElementById('idealWeightOutput').innerText = 
-                `${idealWeight} ${langData.kg} (${langData.range}: ${minIdeal} - ${maxIdeal} ${langData.kg})`;
+    document.documentElement.lang = currentLang;
+    document.documentElement.dir = t.dir;
 
-            // 3. النصيحة والهدف
-            const adviceElement = document.getElementById('targetAdvice');
+    applyStaticText(currentLang);
 
-            if (weightInput > maxIdeal) {
-                const lossNeeded = (weightInput - idealWeight).toFixed(1);
-                adviceElement.style.color = "#d32f2f";
-                adviceElement.innerText = langData.loseMsg(lossNeeded);
-            } else if (weightInput < minIdeal) {
-                const gainNeeded = (idealWeight - weightInput).toFixed(1);
-                adviceElement.style.color = "#e65100";
-                adviceElement.innerText = langData.gainMsg(gainNeeded);
-            } else {
-                adviceElement.style.color = "#2e7d32";
-                adviceElement.innerText = langData.perfectMsg;
-            }
+    // if results are already visible, recompute them in the new language
+    if (els.resultsBlock.classList.contains('show')) {
+      calculate();
+    }
+  }
 
-            document.getElementById('resultsBlock').style.display = 'block';
-        }
-    </script>
+  function clearErrors(){
+    [els.fieldBirthdate, els.fieldHeight, els.fieldWeight].forEach(f => f.classList.remove('error'));
+  }
+
+  function validate(birthdateStr, heightVal, weightVal){
+    let valid = true;
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const bd = birthdateStr ? new Date(birthdateStr) : null;
+
+    if (!birthdateStr || isNaN(bd.getTime()) || bd > today) {
+      els.fieldBirthdate.classList.add('error');
+      valid = false;
+    }
+    if (!heightVal || isNaN(heightVal) || heightVal < 50 || heightVal > 250) {
+      els.fieldHeight.classList.add('error');
+      valid = false;
+    }
+    if (!weightVal || isNaN(weightVal) || weightVal < 20 || weightVal > 300) {
+      els.fieldWeight.classList.add('error');
+      valid = false;
+    }
+    return valid;
+  }
+
+  function calculate(){
+    const t = i18n[currentLang];
+    clearErrors();
+
+    const birthdateStr = els.birthdate.value;
+    const heightVal = parseFloat(els.height.value);
+    const weightVal = parseFloat(els.weight.value);
+
+    if (!validate(birthdateStr, heightVal, weightVal)) {
+      els.resultsBlock.classList.remove('show');
+      return;
+    }
+
+    // 1. Precise age calculation (calendar-aware, borrows from correct month lengths)
+    const birthDate = new Date(birthdateStr);
+    const today = new Date();
+
+    let years = today.getFullYear() - birthDate.getFullYear();
+    let months = today.getMonth() - birthDate.getMonth();
+    let days = today.getDate() - birthDate.getDate();
+
+    if (days < 0) {
+      months--;
+      const prevMonthLastDay = new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+      days += prevMonthLastDay;
+    }
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+
+    const totalDays = Math.floor((today - birthDate) / (1000 * 60 * 60 * 24));
+
+    els.ageOutput.textContent = `${years} ${t.years}  ${months} ${t.months}  ${days} ${t.days}`;
+    els.ageOutputDays.textContent = `${totalDays.toLocaleString(currentLang === 'ar' ? 'ar-EG' : 'en-US')} ${currentLang === 'ar' ? 'يوم بالإجمالي' : 'total days lived'}`;
+
+    // 2. Ideal weight (BMI 22 midpoint, 18.5–24.9 healthy range) — numeric throughout
+    const heightInMeters = heightVal / 100;
+    const idealWeight = 22 * heightInMeters * heightInMeters;
+    const minIdeal = 18.5 * heightInMeters * heightInMeters;
+    const maxIdeal = 24.9 * heightInMeters * heightInMeters;
+
+    const idealWeightStr = idealWeight.toFixed(1);
+    const minIdealStr = minIdeal.toFixed(1);
+    const maxIdealStr = maxIdeal.toFixed(1);
+
+    els.idealWeightOutput.innerHTML =
+      `<span class="mono-num">${idealWeightStr} ${t.kg}</span><br>` +
+      `<span style="color:var(--text-faint); font-size:13px; font-weight:600;">${t.range}: <span class="mono-num">${minIdealStr}–${maxIdealStr} ${t.kg}</span></span>`;
+
+    // 3. Advice — comparing numbers to numbers, not numbers to strings
+    els.adviceBox.classList.remove('state-good', 'state-lose', 'state-gain');
+
+    if (weightVal > maxIdeal) {
+      const lossNeeded = (weightVal - idealWeight).toFixed(1);
+      els.adviceBox.classList.add('state-lose');
+      els.targetAdvice.textContent = t.loseMsg(lossNeeded);
+    } else if (weightVal < minIdeal) {
+      const gainNeeded = (idealWeight - weightVal).toFixed(1);
+      els.adviceBox.classList.add('state-gain');
+      els.targetAdvice.textContent = t.gainMsg(gainNeeded);
+    } else {
+      els.adviceBox.classList.add('state-good');
+      els.targetAdvice.textContent = t.perfectMsg;
+    }
+
+    els.resultsBlock.classList.add('show');
+  }
+
+  // expose the two functions the inline onclick handlers call
+  window.toggleLanguage = toggleLanguage;
+  window.calculate = calculate;
+})();
+</script>
+
 </body>
 </html>
